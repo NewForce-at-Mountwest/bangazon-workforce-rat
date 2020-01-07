@@ -22,8 +22,9 @@
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
          
-            
-        </tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrentDepartment)
+            </th>        </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
@@ -37,7 +38,22 @@
             <td>
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
-         
+            <td>
+                @Html.DisplayFor(modelItem => item.CurrentDepartment)
+            </td>
+            @if (item.CurrentDepartment != null)
+            {
+                <td>
+                    @item.CurrentDepartment.Name.Count()
+                </td>
+            }
+            else
+            {
+                <td>
+                    NO DEPARTMENT
+                </td>
+            }
+            <td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |

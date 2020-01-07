@@ -38,8 +38,17 @@ namespace BangazonWorkforce.Controllers
                     cmd.CommandText = @"
                      SELECT e.Id,
                      e.FirstName,
-                    e.LastName
-                    FROM Employee e";
+					 e.LastName,
+                    d.Name
+                    as 'Department'
+
+                    FROM Employee e LEFT JOIN Department d ON e.DepartmentId = d.id";
+;
+                    //SELECT e.Id,
+                    // e.FirstName,
+                    //e.LastName
+                    //FROM Employee e
+
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     List<Employee> employees = new List<Employee>();
@@ -55,6 +64,17 @@ namespace BangazonWorkforce.Controllers
                         employees.Add(employee);
                     }
 
+                    List<Department> departments = new List<Department>();
+                    while (reader.Read())
+                    {
+                        Department department = new Department
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                        };
+
+                        departments.Add(department);
+                    }
                     reader.Close();
 
                     return View(employees);
