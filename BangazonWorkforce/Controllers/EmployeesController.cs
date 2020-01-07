@@ -41,7 +41,7 @@ namespace BangazonWorkforce.Controllers
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                         SELECT Employee.Id, Employee.FirstName, Employee.LastName, Employee.IsSupervisor, Employee.DepartmentId AS 'Department Id', ComputerEmployee.AssignDate, ComputerEmployee.UnassignDate, Computer.Make, Computer.Manufacturer, TrainingProgram.[Name] 
+                         SELECT Employee.Id, Employee.FirstName, Employee.LastName, Employee.IsSupervisor, Employee.DepartmentId AS 'Department Id', ComputerEmployee.AssignDate, ComputerEmployee.UnassignDate, Computer.Make, Computer.Manufacturer, TrainingProgram.[Name] AS 'Training Program Name', TrainingProgram.Id AS 'Training Program Id'
 FROM Employee
  
  LEFT JOIN EmployeeTraining on EmployeeTraining.EmployeeId = Employee.Id
@@ -65,12 +65,22 @@ WHERE Employee.Id = @id";
                                 LastName = reader.GetString(reader.GetOrdinal("LastName")),
                                 IsSuperVisor = reader.GetBoolean(reader.GetOrdinal("IsSuperVisor")),
                                 DepartmentId = reader.GetInt32(reader.GetOrdinal("Department Id")),
+                                TrainingPrograms = new List<TrainingProgram>(),
                                 CurrentComputer = new Computer
                                 {
                                     Make = reader.GetString(reader.GetOrdinal("Make")),
                                     Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer"))
-                                }
+                                }                            
                             };
+                            if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
+                            {
+                                TrainingProgram trainingProgram = new TrainingProgram()
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("Training Program Id")),
+                                    Name = reader.GetString(reader.GetOrdinal("Training Program Name"))
+                                };
+                                employee.TrainingPrograms.Add(trainingProgram);
+                            } 
                         }
                         else
                         {
@@ -80,8 +90,18 @@ WHERE Employee.Id = @id";
                                 FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                                 LastName = reader.GetString(reader.GetOrdinal("LastName")),
                                 IsSuperVisor = reader.GetBoolean(reader.GetOrdinal("IsSuperVisor")),
-                                DepartmentId = reader.GetInt32(reader.GetOrdinal("Department Id"))
+                                DepartmentId = reader.GetInt32(reader.GetOrdinal("Department Id")),
+                                TrainingPrograms = new List<TrainingProgram>()
                             };
+                            if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
+                            {
+                                TrainingProgram trainingProgram = new TrainingProgram()
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("Training Program Id")),
+                                    Name = reader.GetString(reader.GetOrdinal("Training Program Name"))
+                                };
+                                employee.TrainingPrograms.Add(trainingProgram);
+                            }
                         }
                     }
                     reader.Close();
