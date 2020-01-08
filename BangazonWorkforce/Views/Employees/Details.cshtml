@@ -40,42 +40,49 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsSuperVisor)
         </dd>
-        @* If the current computer is not null, then show it in the view. Otherwise, it will state NO Assigned Computers *@
-        @if (@Model.CurrentComputer != null)
-        {
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.CurrentComputer)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.CurrentComputer.Make)  @Html.DisplayFor(model => model.CurrentComputer.Manufacturer)
-            </dd>
-        }
-        else
-        {
-            <dt>No Assigned Computer</dt>
-        }
-
-
-        @*If the training programs list is not null, then show it in the view. Otherwise, it will state the employee is not enrolled in any programs.*@
-        @foreach (TrainingProgram trainingProgram in Model.TrainingPrograms)
-        {
-
-            @if (@Model.TrainingPrograms != null)
-
+        <dl>
+            @* If the current computer is not null, then show it in the view. Otherwise, it will state NO Assigned Computers *@
+            @if (@Model.CurrentComputer != null)
             {
-
                 <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => trainingProgram.Name)
+                    @Html.DisplayNameFor(model => model.CurrentComputer)
                 </dt>
                 <dd class="col-sm-10">
-                    @Html.DisplayFor(model => trainingProgram.Name)
+                    @Html.DisplayFor(model => model.CurrentComputer.Make)  @Html.DisplayFor(model => model.CurrentComputer.Manufacturer)
                 </dd>
             }
             else
             {
-                <dt>Not Enrolled In Training Programs</dt>
+                <dt class="col-sm-2">
+                    Current Computer
+                </dt>
+                <dd>No Assigned Computer</dd>
             }
-        }
+        </dl>
+
+        <dl>
+            @*If the training programs list is not null, then show it in the view. Otherwise, it will state the employee is not enrolled in any programs.*@
+            <dt class="col-sm-2"> Training Programs
+            </dt>
+            @foreach (TrainingProgram trainingProgram in Model.TrainingPrograms)
+            {
+
+                @if (@Model.TrainingPrograms != null)
+
+                {
+
+
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => trainingProgram.Name)
+                    </dd>
+                }
+                else
+                {
+                    
+                    <dd>Not Enrolled In Training Programs</dd>
+                }
+            }
+        </dl>
     </dl>
 </div>
 <div>
