@@ -27,11 +27,12 @@ namespace BangazonWorkforce.Controllers
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
-        // GET: Employees
+        // GET: Employees from database
         public ActionResult Index()
         {
             using (SqlConnection conn = Connection)
             {
+            
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
@@ -43,13 +44,11 @@ namespace BangazonWorkforce.Controllers
                     as 'Department'
 
                     FROM Employee e LEFT JOIN Department d ON e.DepartmentId = d.id";
-;
-                    //SELECT e.Id,
-                    // e.FirstName,
-                    //e.LastName
-                    //FROM Employee e
+
 
                     SqlDataReader reader = cmd.ExecuteReader();
+
+                    //get list of employees and department names
 
                     List<Employee> employees = new List<Employee>();
                     while (reader.Read())
@@ -60,8 +59,7 @@ namespace BangazonWorkforce.Controllers
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                             LastName = reader.GetString(reader.GetOrdinal("LastName")),
-                       //DepartmentId = reader.GetInt32(reader.GetOrdinal("Department Id")),
-                       CurrentDepartment = new Department()
+                            CurrentDepartment = new Department()
                             {
                               Name= reader.GetString(reader.GetOrdinal("Department")),
                             }
