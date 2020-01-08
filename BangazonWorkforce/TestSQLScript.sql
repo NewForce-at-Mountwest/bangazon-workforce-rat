@@ -139,15 +139,24 @@ INSERT INTO Employee (FirstName, LastName, DepartmentId, IsSuperVisor) VALUES ('
 INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer) VALUES ('12/07/2018', null, 'Laptop', 'DELL');
 INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer) VALUES ('01/05/2017', null, 'Laptop', 'IBM');
 INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer) VALUES ('12/17/2016', null, 'Laptop', 'DELL');
+INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer) VALUES ('11/11/2017', null, 'Super Computer', 'HP');
+INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer) VALUES ('01/01/2016', null, 'Laser Fast Computer', 'IBM');
+INSERT INTO Computer (PurchaseDate, DecomissionDate, Make, Manufacturer) VALUES ('10/02/2013', null, 'Touch Screen', 'DELL');
 INSERT  INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate) VALUES (1, 2, '01/05/2017', null);
 INSERT  INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate) VALUES (2, 3, '02/13/2018', '07/19/2019');
 INSERT  INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate) VALUES (3, 2, '07/04/2018', null);
+INSERT  INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate) VALUES (1, 4, '01/05/2015', '05/01/2015');
+INSERT  INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate) VALUES (2, 5, '02/13/2015', '07/19/2015');
+INSERT  INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate) VALUES (2, 6, '07/24/2019', '12/12/2019');
 INSERT INTO TrainingProgram ([Name], StartDate, EndDate, MaxAttendees) VALUES ('How to Treat Customers', '2/5/19', '6/12/19', 25)
 INSERT INTO TrainingProgram ([Name], StartDate, EndDate, MaxAttendees) VALUES ('How to Tie a Tie', '1/1/19', '12/30/19', 100)
 INSERT INTO TrainingProgram ([Name], StartDate, EndDate, MaxAttendees) VALUES ('When to Say Hello', '4/12/19', '4/13/19', 5)
 INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId) VALUES (1,3)
 INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId) VALUES (2,2)
 INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId) VALUES (3,1)
+INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId) VALUES (2,3)
+INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId) VALUES (1,2)
+INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId) VALUES (1,1)
 INSERT INTO Customer (FirstName, LastName) VALUES('Sebass', 'LeClass');
 INSERT INTO Customer (FirstName, LastName) VALUES ('TheDude', 'Abides');
 INSERT INTO Customer(FirstName, LastName) VALUES ('Liono', 'Thundercat');

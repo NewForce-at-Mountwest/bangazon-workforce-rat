@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -69,14 +68,90 @@ namespace BangazonWorkforce.Controllers
         // GET: Employees/Details/5
         public ActionResult Details(int id)
         {
-            return View();
-        }
+            cmd.CommandText = @"
+                         SELECT Employee.Id, Employee.FirstName, Employee.LastName, Employee.IsSupervisor, Employee.DepartmentId AS 'Department Id', ComputerEmployee.AssignDate, ComputerEmployee.UnassignDate, Computer.Make, Computer.Manufacturer, TrainingProgram.[Name] AS 'Training Program Name', TrainingProgram.Id AS 'Training Program Id'
+FROM Employee
+
+ LEFT JOIN EmployeeTraining on EmployeeTraining.EmployeeId = Employee.Id
+ LEFT JOIN TrainingProgram on EmployeeTraining.TrainingProgramId = TrainingProgram.Id
+LEFT JOIN ComputerEmployee on ComputerEmployee.EmployeeId = Employee.Id
+LEFT JOIN Computer ON ComputerEmployee.ComputerId = Computer.Id
+WHERE Employee.Id = @id";
+                    cmd.Parameters.Add(new SqlParameter("@id", id));
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    // Create a new employee and set it equal to null.
+                    Employee employee = null;
+                    // Create a while loop so that additional training programs will be added.
+                    while (reader.Read())
+                    {
+
+                        //If there isn't already an employee, then one will be created now.
+                        if (employee == null)
+                        {
+
+                            employee = new Employee()
+
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                                IsSuperVisor = reader.GetBoolean(reader.GetOrdinal("IsSuperVisor")),
+                                DepartmentId = reader.GetInt32(reader.GetOrdinal("Department Id")),
+                                TrainingPrograms = new List<TrainingProgram>()
+                            };
+                        }
+                        //If the UnassignDate is equal to null for the employee's computer, that means that they have a current computer and a current computer needs to be created. If they do not have a current computer, then it will be set to null.
+                        if (reader.IsDBNull(reader.GetOrdinal("UnassignDate")))
+                        {
+                            employee.CurrentComputer = new Computer()
+                            {
+                                Make = reader.GetString(reader.GetOrdinal("Make")),
+                                Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer"))
+                            };
+                        }
+                        else
+                        {
+                            employee.CurrentComputer = null;
+                        }
+
+                            //If the employee has any training programs linked to them, then a new list of training programs will be created.
+
+                            if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
+                            {
+
+                                TrainingProgram trainingProgram = new TrainingProgram()
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("Training Program Id")),
+                                    Name = reader.GetString(reader.GetOrdinal("Training Program Name"))
+                                };
+                            //If the training program id doesn't match any of the training program id's already added, then add it. This makes sure the programs are only added one time.
+
+                            if (!employee.TrainingPrograms.Any(e => e.Id == trainingProgram.Id))
+                            {
+                                employee.TrainingPrograms.Add(trainingProgram);
+                            }
+                            }
+
+
+
+
+
+                    }
+                //Close the reader and add the employee details to the view.
+                        reader.Close();
+
+                        return View(employee);
+                    }
+                }
+            }
+
+
 
         // GET: Employees/ Create
         public ActionResult Create()
         {
             // Create instance of a CreateEmployeeViewModel
-            // If we want to get all the departments, we need to use the constructor that's expecting a connection string. 
+            // If we want to get all the departments, we need to use the constructor that's expecting a connection string.
             // When we create this instance, the constructor will run and get all the departments.
 
             CreateEmployeeViewModel employeeViewModel = new CreateEmployeeViewModel(_config.GetConnectionString("DefaultConnection"));
@@ -84,6 +159,8 @@ namespace BangazonWorkforce.Controllers
             // Pass it to the view
             return View(employeeViewModel);
         }
+
+
 
         // POST: Employees/Create
         [HttpPost]
@@ -155,5 +232,4 @@ namespace BangazonWorkforce.Controllers
                 return View();
             }
         }
-    }
-}
+
