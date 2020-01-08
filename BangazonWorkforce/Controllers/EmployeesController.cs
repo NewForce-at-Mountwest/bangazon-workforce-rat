@@ -61,21 +61,43 @@ namespace BangazonWorkforce.Controllers
                             LastName = reader.GetString(reader.GetOrdinal("LastName")),
                             
                         };
-
-                        employees.Add(employee);
-                    }
-
-                    List<Department> departments = new List<Department>();
-                    while (reader.Read())
-                    {
-                        Department department = new Department
+                        if (!reader.IsDBNull(reader.GetOrdinal("Department")))
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Name = reader.GetString(reader.GetOrdinal("Name")),
-                        };
+                            Department department = new Department()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("DepartmentId")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                               
+                            };
+                            if (employees.Any(e => e.Id == employee.Id))
+                            {
+                                Employee employeeToReference = employees.Where(e => e.Id == employee.Id).FirstOrDefault();
+                                if (!employeeToReference.CurrentDepartment.Any(s => s.Id == department.Id))
+                                
+                                    employeeToReference.CurrentDepartment.Add(department);
+                                }
+                            }
+                            else
+                            {
+                                employee.CurrentDepartment.Add(department);
+                                employees.Add(employee);
+                            }
+                        }
 
-                        departments.Add(department);
-                    }
+              
+
+                    //List<Department> departments = new List<Department>();
+                    //while (reader.Read())
+                    //{
+                    //    Department department = new Department
+                    //    {
+                    //        Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    //        Name = reader.GetString(reader.GetOrdinal("Name")),
+                    //    };
+
+                    //    departments.Add(department);
+                   //}
+
                     reader.Close();
 
                     return View(employees);
