@@ -30,39 +30,8 @@ namespace BangazonWorkforce.Controllers
         // GET: Employees
         public ActionResult Index()
         {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"SELECT e.Id,
-                    e.FirstName,
-                    e.LastName,
-                    e.DepartmentId,
-                    e.IsSuperVisor
-                    FROM Employee e";
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    List<Employee> employees = new List<Employee>();
-                    while (reader.Read())
-                    {
-                        Employee employee = new Employee
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
-                            DepartmentId = reader.GetInt32(reader.GetOrdinal("DepartmentId")),
-                            IsSuperVisor = reader.GetBoolean(reader.GetOrdinal("IsSuperVisor"))
-                        };
-
-                        employees.Add(employee);
-                    }
-
-                    reader.Close();
-
-                    return View(employees);
-                }
-            }
+            return View();
+            
         }
 
 
