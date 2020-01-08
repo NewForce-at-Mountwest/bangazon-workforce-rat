@@ -35,7 +35,7 @@ namespace BangazonWorkforce.Controllers
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText =@"SELECT e.Id,
+                    cmd.CommandText = @"SELECT e.Id,
                     e.FirstName,
                     e.LastName,
                     e.DepartmentId,
@@ -65,10 +65,17 @@ namespace BangazonWorkforce.Controllers
             }
         }
 
+
         // GET: Employees/Details/5
         public ActionResult Details(int id)
         {
-            cmd.CommandText = @"
+
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
                          SELECT Employee.Id, Employee.FirstName, Employee.LastName, Employee.IsSupervisor, Employee.DepartmentId AS 'Department Id', ComputerEmployee.AssignDate, ComputerEmployee.UnassignDate, Computer.Make, Computer.Manufacturer, TrainingProgram.[Name] AS 'Training Program Name', TrainingProgram.Id AS 'Training Program Id'
 FROM Employee
 
@@ -114,36 +121,36 @@ WHERE Employee.Id = @id";
                             employee.CurrentComputer = null;
                         }
 
-                            //If the employee has any training programs linked to them, then a new list of training programs will be created.
+                        //If the employee has any training programs linked to them, then a new list of training programs will be created.
 
-                            if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
+                        if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
+                        {
+
+                            TrainingProgram trainingProgram = new TrainingProgram()
                             {
-
-                                TrainingProgram trainingProgram = new TrainingProgram()
-                                {
-                                    Id = reader.GetInt32(reader.GetOrdinal("Training Program Id")),
-                                    Name = reader.GetString(reader.GetOrdinal("Training Program Name"))
-                                };
+                                Id = reader.GetInt32(reader.GetOrdinal("Training Program Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Training Program Name"))
+                            };
                             //If the training program id doesn't match any of the training program id's already added, then add it. This makes sure the programs are only added one time.
 
                             if (!employee.TrainingPrograms.Any(e => e.Id == trainingProgram.Id))
                             {
                                 employee.TrainingPrograms.Add(trainingProgram);
                             }
-                            }
+                        }
 
 
 
 
 
                     }
-                //Close the reader and add the employee details to the view.
-                        reader.Close();
+                    //Close the reader and add the employee details to the view.
+                    reader.Close();
 
-                        return View(employee);
-                    }
+                    return View(employee);
                 }
             }
+        }
 
 
 
@@ -232,4 +239,6 @@ WHERE Employee.Id = @id";
                 return View();
             }
         }
+    }
+}
 
