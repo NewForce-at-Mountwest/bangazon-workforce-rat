@@ -120,22 +120,29 @@ WHERE Employee.Id = @id";
                             };
                         }
                         //If the UnassignDate is equal to null for the employee's computer, that means that they have a current computer and a current computer needs to be created. If they do not have a current computer, then it will be set to null.
-                        if (reader.IsDBNull(reader.GetOrdinal("UnassignDate")))
+                        if (!reader.IsDBNull(reader.GetOrdinal("Make")))
                         {
-                            employee.CurrentComputer = new Computer()
+                            if (reader.IsDBNull(reader.GetOrdinal("UnassignDate")))
                             {
-                                Make = reader.GetString(reader.GetOrdinal("Make")),
-                                Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer"))
-                            };
+                                employee.CurrentComputer = new Computer()
+                                {
+                                    Make = reader.GetString(reader.GetOrdinal("Make")),
+                                    Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer"))
+                                };
+                            }
+                            else
+                            {
+                                employee.CurrentComputer = null;
+                            }
                         }
                         else
                         {
                             employee.CurrentComputer = null;
                         }
 
-                            //If the employee has any training programs linked to them, then a new list of training programs will be created.
+                        //If the employee has any training programs linked to them, then a new list of training programs will be created.
 
-                            if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
+                        if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
                             {
 
                                 TrainingProgram trainingProgram = new TrainingProgram()
