@@ -13,6 +13,7 @@ namespace BangazonWorkforce.Controllers
 {
     public class EmployeesController : Controller
     {
+        // GET: Employee
         private readonly IConfiguration _config;
 
         public EmployeesController(IConfiguration config)
@@ -27,19 +28,62 @@ namespace BangazonWorkforce.Controllers
                 return new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             }
         }
-        // GET: Employees
+        // GET: Employees from database
         public ActionResult Index()
         {
-            return View();
-            
+            using (SqlConnection conn = Connection)
+            {
+
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                     SELECT e.Id,
+                     e.FirstName,
+					 e.LastName,
+                    d.Name
+                    as 'Department'
+
+                    FROM Employee e LEFT JOIN Department d ON e.DepartmentId = d.id";
+
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    //get list of employees and department names
+
+                    List<Employee> employees = new List<Employee>();
+                    while (reader.Read())
+                    {
+
+                        Employee employee = new Employee
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            CurrentDepartment = new Department()
+                            {
+                              Name= reader.GetString(reader.GetOrdinal("Department")),
+                            }
+                        };
+
+                        employees.Add(employee);
+                    }
+                    reader.Close();
+
+                    return View(employees);
+                }
+            }
         }
+
+
 
 
         // GET: Employees/Details/5
         public ActionResult Details(int id)
         {
 
-            using (SqlConnection conn = Connection)
+
+             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
@@ -89,6 +133,8 @@ WHERE Employee.Id = @id";
                         {
                             employee.CurrentComputer = null;
                         }
+
+                            //If the employee has any training programs linked to them, then a new list of training programs will be created.
 
                         //If the employee has any training programs linked to them, then a new list of training programs will be created.
 
@@ -210,4 +256,3 @@ WHERE Employee.Id = @id";
         }
     }
 }
-
