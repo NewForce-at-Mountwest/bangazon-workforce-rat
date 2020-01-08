@@ -24,7 +24,8 @@
          
             <th>
                 @Html.DisplayNameFor(model => model.CurrentDepartment)
-            </th>        </tr>
+            </th>        
+        </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
@@ -39,21 +40,9 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CurrentDepartment)
+                @Html.DisplayFor(modelItem => item.CurrentDepartment.Name)
             </td>
-            @if (item.CurrentDepartment != null)
-            {
-                <td>
-                    @item.CurrentDepartment
-                </td>
-            }
-            else
-            {
-                <td>
-                    NO DEPARTMENT
-                </td>
-            }
-            <td>
+         
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
