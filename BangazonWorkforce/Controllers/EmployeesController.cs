@@ -54,37 +54,15 @@ WHERE Employee.Id = @id";
 
                     Employee employee = null;
 
-                    if (reader.Read())
+                    while (reader.Read())
                     {
-                        if (reader.IsDBNull(reader.GetOrdinal("UnassignDate")))
+
+
+                        if (employee == null)
                         {
-                            employee = new Employee
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                                LastName = reader.GetString(reader.GetOrdinal("LastName")),
-                                IsSuperVisor = reader.GetBoolean(reader.GetOrdinal("IsSuperVisor")),
-                                DepartmentId = reader.GetInt32(reader.GetOrdinal("Department Id")),
-                                TrainingPrograms = new List<TrainingProgram>(),
-                                CurrentComputer = new Computer
-                                {
-                                    Make = reader.GetString(reader.GetOrdinal("Make")),
-                                    Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer"))
-                                }                            
-                            };
-                            if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
-                            {
-                                TrainingProgram trainingProgram = new TrainingProgram()
-                                {
-                                    Id = reader.GetInt32(reader.GetOrdinal("Training Program Id")),
-                                    Name = reader.GetString(reader.GetOrdinal("Training Program Name"))
-                                };
-                                employee.TrainingPrograms.Add(trainingProgram);
-                            } 
-                        }
-                        else
-                        {
-                            employee = new Employee
+
+                            employee = new Employee()
+
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                                 FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
@@ -93,24 +71,51 @@ WHERE Employee.Id = @id";
                                 DepartmentId = reader.GetInt32(reader.GetOrdinal("Department Id")),
                                 TrainingPrograms = new List<TrainingProgram>()
                             };
+                        }
+
+                        if (reader.IsDBNull(reader.GetOrdinal("UnassignDate")))
+                        {
+                            employee.CurrentComputer = new Computer()
+                            {
+                                Make = reader.GetString(reader.GetOrdinal("Make")),
+                                Manufacturer = reader.GetString(reader.GetOrdinal("Manufacturer"))
+                            };
+                        }
+                        else
+                        {
+                            employee.CurrentComputer = null;
+                        }
+                        
+                            
+
                             if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
                             {
+                           
                                 TrainingProgram trainingProgram = new TrainingProgram()
                                 {
                                     Id = reader.GetInt32(reader.GetOrdinal("Training Program Id")),
                                     Name = reader.GetString(reader.GetOrdinal("Training Program Name"))
                                 };
+
+                            if (!employee.TrainingPrograms.Any(e => e.Id == trainingProgram.Id))
+                            {
                                 employee.TrainingPrograms.Add(trainingProgram);
                             }
-                        }
-                    }
-                    reader.Close();
+                            }
 
-                    return View(employee);
+
+
+                          
+                        
+                    }
+                
+                        reader.Close();
+
+                        return View(employee);
+                    }
                 }
             }
-        }
-
+       
         // GET: Employees/Create
         public ActionResult Create()
         {
