@@ -51,13 +51,13 @@ LEFT JOIN Computer ON ComputerEmployee.ComputerId = Computer.Id
 WHERE Employee.Id = @id";
                     cmd.Parameters.Add(new SqlParameter("@id", id));
                     SqlDataReader reader = cmd.ExecuteReader();
-
+                    // Create a new employee and set it equal to null.
                     Employee employee = null;
-
+                    // Create a while loop so that additional training programs will be added. 
                     while (reader.Read())
                     {
 
-
+                        //If there isn't already an employee, then one will be created now.
                         if (employee == null)
                         {
 
@@ -72,7 +72,7 @@ WHERE Employee.Id = @id";
                                 TrainingPrograms = new List<TrainingProgram>()
                             };
                         }
-
+                        //If the UnassignDate is equal to null for the employee's computer, that means that they have a current computer and a current computer needs to be created. If they do not have a current computer, then it will be set to null.
                         if (reader.IsDBNull(reader.GetOrdinal("UnassignDate")))
                         {
                             employee.CurrentComputer = new Computer()
@@ -86,7 +86,7 @@ WHERE Employee.Id = @id";
                             employee.CurrentComputer = null;
                         }
                         
-                            
+                            //If the employee has any training programs linked to them, then a new list of training programs will be created.
 
                             if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
                             {
@@ -96,6 +96,7 @@ WHERE Employee.Id = @id";
                                     Id = reader.GetInt32(reader.GetOrdinal("Training Program Id")),
                                     Name = reader.GetString(reader.GetOrdinal("Training Program Name"))
                                 };
+                            //If the training program id doesn't match any of the training program id's already added, then add it. This makes sure the programs are only added one time.
 
                             if (!employee.TrainingPrograms.Any(e => e.Id == trainingProgram.Id))
                             {
@@ -108,7 +109,7 @@ WHERE Employee.Id = @id";
                           
                         
                     }
-                
+                //Close the reader and add the employee details to the view.
                         reader.Close();
 
                         return View(employee);
