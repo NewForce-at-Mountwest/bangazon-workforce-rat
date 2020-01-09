@@ -1,40 +1,40 @@
 ﻿-- Uncomment out these lines AFTER the first time you create your database
- --DELETE FROM OrderProduct;
- --DELETE FROM ComputerEmployee;
- --DELETE FROM EmployeeTraining;
- --DELETE FROM Employee;
- --DELETE FROM TrainingProgram;
- --DELETE FROM Computer;
- --DELETE FROM Department;
- --DELETE FROM [Order];
- --DELETE FROM PaymentType;
- --DELETE FROM Product;
- --DELETE FROM ProductType;
- --DELETE FROM Customer;
- --ALTER TABLE Employee DROP CONSTRAINT [FK_EmployeeDepartment];
- --ALTER TABLE ComputerEmployee DROP CONSTRAINT [FK_ComputerEmployee_Employee];
- --ALTER TABLE ComputerEmployee DROP CONSTRAINT [FK_ComputerEmployee_Computer];
- --ALTER TABLE EmployeeTraining DROP CONSTRAINT [FK_EmployeeTraining_Employee];
- --ALTER TABLE EmployeeTraining DROP CONSTRAINT [FK_EmployeeTraining_Training];
- --ALTER TABLE Product DROP CONSTRAINT [FK_Product_ProductType];
- --ALTER TABLE Product DROP CONSTRAINT [FK_Product_Customer];
- --ALTER TABLE PaymentType DROP CONSTRAINT [FK_PaymentType_Customer];
- --ALTER TABLE [Order] DROP CONSTRAINT [FK_Order_Customer];
- --ALTER TABLE [Order] DROP CONSTRAINT [FK_Order_Payment];
- --ALTER TABLE OrderProduct DROP CONSTRAINT [FK_OrderProduct_Product];
- --ALTER TABLE OrderProduct DROP CONSTRAINT [FK_OrderProduct_Order];
- --DROP TABLE IF EXISTS OrderProduct;
- --DROP TABLE IF EXISTS ComputerEmployee;
- --DROP TABLE IF EXISTS EmployeeTraining;
- --DROP TABLE IF EXISTS Employee;
- --DROP TABLE IF EXISTS TrainingProgram;
- --DROP TABLE IF EXISTS Computer;
- --DROP TABLE IF EXISTS Department;
- --DROP TABLE IF EXISTS [Order];
- --DROP TABLE IF EXISTS PaymentType;
- --DROP TABLE IF EXISTS Product;
- --DROP TABLE IF EXISTS ProductType;
- --DROP TABLE IF EXISTS Customer;
+ DELETE FROM OrderProduct;
+ DELETE FROM ComputerEmployee;
+ DELETE FROM EmployeeTraining;
+ DELETE FROM Employee;
+ DELETE FROM TrainingProgram;
+ DELETE FROM Computer;
+ DELETE FROM Department;
+ DELETE FROM [Order];
+ DELETE FROM PaymentType;
+ DELETE FROM Product;
+ DELETE FROM ProductType;
+ DELETE FROM Customer;
+ ALTER TABLE Employee DROP CONSTRAINT [FK_EmployeeDepartment];
+ ALTER TABLE ComputerEmployee DROP CONSTRAINT [FK_ComputerEmployee_Employee];
+ ALTER TABLE ComputerEmployee DROP CONSTRAINT [FK_ComputerEmployee_Computer];
+ ALTER TABLE EmployeeTraining DROP CONSTRAINT [FK_EmployeeTraining_Employee];
+ ALTER TABLE EmployeeTraining DROP CONSTRAINT [FK_EmployeeTraining_Training];
+ ALTER TABLE Product DROP CONSTRAINT [FK_Product_ProductType];
+ ALTER TABLE Product DROP CONSTRAINT [FK_Product_Customer];
+ ALTER TABLE PaymentType DROP CONSTRAINT [FK_PaymentType_Customer];
+ ALTER TABLE [Order] DROP CONSTRAINT [FK_Order_Customer];
+ ALTER TABLE [Order] DROP CONSTRAINT [FK_Order_Payment];
+ ALTER TABLE OrderProduct DROP CONSTRAINT [FK_OrderProduct_Product];
+ ALTER TABLE OrderProduct DROP CONSTRAINT [FK_OrderProduct_Order];
+ DROP TABLE IF EXISTS OrderProduct;
+ DROP TABLE IF EXISTS ComputerEmployee;
+ DROP TABLE IF EXISTS EmployeeTraining;
+ DROP TABLE IF EXISTS Employee;
+ DROP TABLE IF EXISTS TrainingProgram;
+ DROP TABLE IF EXISTS Computer;
+ DROP TABLE IF EXISTS Department;
+ DROP TABLE IF EXISTS [Order];
+ DROP TABLE IF EXISTS PaymentType;
+ DROP TABLE IF EXISTS Product;
+ DROP TABLE IF EXISTS ProductType;
+ DROP TABLE IF EXISTS Customer;
 
 
 CREATE TABLE Department (
@@ -148,9 +148,10 @@ INSERT  INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate)
 INSERT  INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate) VALUES (1, 4, '01/05/2015', '05/01/2015');
 INSERT  INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate) VALUES (2, 5, '02/13/2015', '07/19/2015');
 INSERT  INTO ComputerEmployee (EmployeeId, ComputerId, AssignDate, UnassignDate) VALUES (2, 6, '07/24/2019', '12/12/2019');
-INSERT INTO TrainingProgram ([Name], StartDate, EndDate, MaxAttendees) VALUES ('How to Treat Customers', '2/5/19', '6/12/19', 25)
-INSERT INTO TrainingProgram ([Name], StartDate, EndDate, MaxAttendees) VALUES ('How to Tie a Tie', '1/1/19', '12/30/19', 100)
-INSERT INTO TrainingProgram ([Name], StartDate, EndDate, MaxAttendees) VALUES ('When to Say Hello', '4/12/19', '4/13/19', 5)
+INSERT INTO TrainingProgram ([Name], StartDate, EndDate, MaxAttendees) VALUES ('How to Treat Customers', '02/05/20', '06/12/20', 25)
+INSERT INTO TrainingProgram ([Name], StartDate, EndDate, MaxAttendees) VALUES ('How to Tie a Tie', '01/01/20', '12/30/20', 100)
+INSERT INTO TrainingProgram ([Name], StartDate, EndDate, MaxAttendees) VALUES ('When to Say Hello', '04/12/20', '04/13/20', 5)
+INSERT INTO TrainingProgram ([Name], StartDate, EndDate, MaxAttendees) VALUES ('Sexual Harrassment In The Workplace', '04/12/20', '04/13/20', 5)
 INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId) VALUES (1,3)
 INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId) VALUES (2,2)
 INSERT INTO EmployeeTraining (EmployeeId, TrainingProgramId) VALUES (3,1)
