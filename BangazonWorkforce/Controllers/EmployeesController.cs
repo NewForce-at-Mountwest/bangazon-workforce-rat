@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using BangazonWorkforce.Models.ViewModels;
 using BangazonWorkforce.Models;
 
 namespace BangazonWorkforce.Controllers
@@ -32,7 +33,7 @@ namespace BangazonWorkforce.Controllers
         {
             using (SqlConnection conn = Connection)
             {
-            
+
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
@@ -142,55 +143,76 @@ WHERE Employee.Id = @id";
 
                         //If the employee has any training programs linked to them, then a new list of training programs will be created.
 
-                        if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
-                            {
+                        //If the employee has any training programs linked to them, then a new list of training programs will be created.
 
-                                TrainingProgram trainingProgram = new TrainingProgram()
-                                {
-                                    Id = reader.GetInt32(reader.GetOrdinal("Training Program Id")),
-                                    Name = reader.GetString(reader.GetOrdinal("Training Program Name"))
-                                };
+                        if (!reader.IsDBNull(reader.GetOrdinal("Training Program Id")))
+                        {
+
+                            TrainingProgram trainingProgram = new TrainingProgram()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Training Program Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Training Program Name"))
+                            };
                             //If the training program id doesn't match any of the training program id's already added, then add it. This makes sure the programs are only added one time.
 
                             if (!employee.TrainingPrograms.Any(e => e.Id == trainingProgram.Id))
                             {
                                 employee.TrainingPrograms.Add(trainingProgram);
                             }
-                            }
+                        }
 
 
 
 
 
                     }
-                //Close the reader and add the employee details to the view.
-                        reader.Close();
+                    //Close the reader and add the employee details to the view.
+                    reader.Close();
 
-                        return View(employee);
-                    }
+                    return View(employee);
                 }
             }
+        }
 
-        // GET: Employees/Create
+
+
+        // GET: Employees/ Create
         public ActionResult Create()
         {
-            return View();
+            // Create instance of a CreateEmployeeViewModel
+            // If we want to get all the departments, we need to use the constructor that's expecting a connection string.
+            // When we create this instance, the constructor will run and get all the departments.
+
+            CreateEmployeeViewModel employeeViewModel = new CreateEmployeeViewModel(_config.GetConnectionString("DefaultConnection"));
+
+            // Pass it to the view
+            return View(employeeViewModel);
         }
+
+
 
         // POST: Employees/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(CreateEmployeeViewModel model)
         {
-            try
+            using (SqlConnection conn = Connection)
             {
-                // TODO: Add insert logic here
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Employee
+                ( FirstName, LastName, IsSuperVisor, DepartmentId )
+                VALUES
+                ( @firstName, @lastName, @isSuperVisor, @departmentId )";
+                    cmd.Parameters.Add(new SqlParameter("@firstName", model.employee.FirstName));
+                    cmd.Parameters.Add(new SqlParameter("@lastName", model.employee.LastName));
+                    cmd.Parameters.Add(new SqlParameter("@isSuperVisor", model.employee.IsSuperVisor));
+                    cmd.Parameters.Add(new SqlParameter("@departmentId", model.employee.DepartmentId));
+                    cmd.ExecuteNonQuery();
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
+                    return RedirectToAction(nameof(Index));
+                }
             }
         }
 
