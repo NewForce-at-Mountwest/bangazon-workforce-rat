@@ -132,7 +132,15 @@ namespace BangazonWorkforce.Controllers
         // GET: TrainingPrograms/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            TrainingProgram trainingProgram = GetTrainingProgramById(id);
+            if (trainingProgram.StartDate > DateTime.Now)
+            {
+                return View(trainingProgram);
+            }
+            else
+            {
+                return StatusCode(403);
+            }
         }
 
         // POST: TrainingPrograms/Delete/5
@@ -142,7 +150,20 @@ namespace BangazonWorkforce.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
+
+                using (SqlConnection conn = Connection)
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = "DELETE TrainingProgram WHERE Id = @id";
+
+                        cmd.Parameters.Add(new SqlParameter("@id", id));
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                    }
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -151,5 +172,61 @@ namespace BangazonWorkforce.Controllers
                 return View();
             }
         }
+
+        // Method: Get Training Program By ID - retrieves training program by its ID
+        private TrainingProgram GetTrainingProgramById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT 
+                                            t.Id AS TrainingProgramId, 
+                                            t.Name, 
+                                            t.StartDate, 
+                                            t.EndDate, 
+                                            t.MaxAttendees, 
+                                            e.FirstName, 
+                                            e.LastName FROM TrainingProgram t
+                                        LEFT JOIN EmployeeTraining et on et.TrainingProgramId = t.Id
+                                        LEFT JOIN Employee e on e.Id = et.EmployeeId
+                                        WHERE t.Id = @id";
+                    cmd.Parameters.Add(new SqlParameter("@id", id));
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    TrainingProgram trainingProgram = null;
+
+                    while (reader.Read())
+                    {
+                        if (trainingProgram == null)
+                        {
+                            trainingProgram = new TrainingProgram
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("TrainingProgramId")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                                EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate")),
+                                MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees")),
+                            };
+                        }
+
+                        //if (!reader.IsDBNull(reader.GetOrdinal("FirstName")))
+                        //{
+                        //    Employee employee = new Employee
+                        //    {
+                        //        FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                        //        LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                        //    };
+
+                        //    trainingProgram.Employees.Add(employee);
+                        //}
+                    }
+                    reader.Close();
+                    return trainingProgram;
+                }
+            }
+        }
     }
 }
+   
