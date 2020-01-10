@@ -54,11 +54,19 @@ namespace BangazonWorkforce.Controllers
                             MaxAttendees = reader.GetInt32(reader.GetOrdinal("MaxAttendees"))
                         };
 
-                        //If the Training Program has already happened, don't show it on the list
-                        DateTime timeRightNow = DateTime.Now;
-                        if (trainingProgram.StartDate > timeRightNow)
+                        // If the End Date entered occurs before the Start Date, throw an error
+                        if (trainingProgram.EndDate < trainingProgram.StartDate)
                         {
-                            trainingPrograms.Add(trainingProgram);
+                            ViewData["Message"] = "Try again!";
+                        }
+                        else
+                        {
+                            // If the Training Program has already happened, don't show it on the list
+                            DateTime timeRightNow = DateTime.Now;
+                            if (trainingProgram.StartDate > timeRightNow)
+                            {
+                                trainingPrograms.Add(trainingProgram);
+                            }
                         }
                     }
                     reader.Close();
@@ -89,20 +97,29 @@ namespace BangazonWorkforce.Controllers
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
+                if (trainingProgram.EndDate < trainingProgram.StartDate)
                 {
-                    cmd.CommandText = @"INSERT INTO TrainingProgram
+                    ViewData["Message"] = "Try again!";
+                    return View(trainingProgram);
+                }
+                else
+                {
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = @"INSERT INTO TrainingProgram
                                        (Name, StartDate, EndDate, MaxAttendees)
                                         VALUES
                                        (@name, @startDate, @endDate, @maxAttendees)";
-                    cmd.Parameters.Add(new SqlParameter("@name", trainingProgram.Name));
-                    cmd.Parameters.Add(new SqlParameter("@startDate", trainingProgram.StartDate));
-                    cmd.Parameters.Add(new SqlParameter("@endDate", trainingProgram.EndDate));
-                    cmd.Parameters.Add(new SqlParameter("@maxAttendees", trainingProgram.MaxAttendees));
-                    cmd.ExecuteNonQuery();
+                        cmd.Parameters.Add(new SqlParameter("@name", trainingProgram.Name));
+                        cmd.Parameters.Add(new SqlParameter("@startDate", trainingProgram.StartDate));
+                        cmd.Parameters.Add(new SqlParameter("@endDate", trainingProgram.EndDate));
+                        cmd.Parameters.Add(new SqlParameter("@maxAttendees", trainingProgram.MaxAttendees));
+                        cmd.ExecuteNonQuery();
 
-                    return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
+
             }
         }
 
